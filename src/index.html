@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'" />
+    <title>Numera Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Applies the saved theme before first paint to avoid a light/dark flash. -->
+    <script src="theme-boot.js"></script>
+  </head>
+  <body>
+    <main class="calculator">
+      <header class="titlebar">
+        <div class="brand">
+          <img class="brand-logo" src="assets/logo.svg" alt="" width="20" height="20" />
+          <span class="brand-name">Numera</span>
+          <span id="mode-name" class="mode-name">Standard</span>
+        </div>
+        <div class="header-actions">
+          <button id="sci-toggle" class="subtle-btn" aria-pressed="false" data-key="F2"
+            title="Scientific mode (F2)">Scientific</button>
+          <button id="history-toggle" class="subtle-btn icon-btn" data-key="h H"
+            title="History (H)" aria-label="History" aria-expanded="false" aria-controls="history">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5A5.5 5.5 0 1 1 2.6 7H1.5l2-2.5 2 2.5H3.6A4.5 4.5 0 1 0 8 3.5V2.5Zm-.5 2h1v3.3l2.3 1.4-.5.8-2.8-1.7V4.5Z"/></svg>
+          </button>
+          <button id="menu-toggle" class="subtle-btn icon-btn" title="Settings" aria-label="Settings"
+            aria-haspopup="menu" aria-expanded="false" aria-controls="menu">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg>
+          </button>
+        </div>
+
+        <div id="menu" class="flyout" role="menu" aria-label="Settings" hidden>
+          <div class="flyout-label" id="theme-label">Theme</div>
+          <div role="group" aria-labelledby="theme-label">
+            <button class="flyout-item" role="menuitemradio" data-theme-choice="system" aria-checked="true">
+              <span class="check" aria-hidden="true"></span>Use system setting
+            </button>
+            <button class="flyout-item" role="menuitemradio" data-theme-choice="light" aria-checked="false">
+              <span class="check" aria-hidden="true"></span>Light
+            </button>
+            <button class="flyout-item" role="menuitemradio" data-theme-choice="dark" aria-checked="false">
+              <span class="check" aria-hidden="true"></span>Dark
+            </button>
+          </div>
+          <div class="flyout-sep" role="separator"></div>
+          <button id="about-open" class="flyout-item" role="menuitem">
+            <span class="check" aria-hidden="true"></span>About Numera
+          </button>
+        </div>
+      </header>
+
+      <section class="display" aria-label="Display">
+        <div class="indicators" aria-live="polite">
+          <span id="ind-angle" class="indicator indicator-angle" title="Angle unit">DEG</span>
+          <span id="ind-second" class="indicator" hidden>2nd</span>
+          <span id="ind-memory" class="indicator" title="A value is stored in memory" hidden>M</span>
+        </div>
+        <div id="expression" class="expression" aria-label="Expression"></div>
+        <output id="result" class="result" aria-live="polite" aria-atomic="true">0</output>
+      </section>
+
+      <section class="memory-row" aria-label="Memory">
+        <button class="key mem" data-action="mc" aria-label="Clear memory">MC</button>
+        <button class="key mem" data-action="mr" aria-label="Recall memory">MR</button>
+        <button class="key mem" data-action="mplus" aria-label="Add to memory">M+</button>
+        <button class="key mem" data-action="mminus" aria-label="Subtract from memory">M−</button>
+        <button class="key mem" data-action="ms" aria-label="Store in memory">MS</button>
+      </section>
+
+      <section id="keypad" class="keypad" aria-label="Keypad">
+        <!-- scientific: modes & constants -->
+        <button class="key sci fn" data-action="second" id="key-second" aria-label="Second function" aria-pressed="false">2nd</button>
+        <button class="key sci fn" data-action="angle" id="key-angle" aria-label="Angle unit: degrees">DEG</button>
+        <button class="key sci fn" data-insert="π" data-key="p" aria-label="Pi">π</button>
+        <button class="key sci fn" data-insert="e" data-key="e" aria-label="Euler's number">e</button>
+        <button class="key sci fn" data-insert="Ans" data-insert2="rand" data-label2="Rand" data-key="a"
+          aria-label="Previous answer" data-aria2="Random number">Ans</button>
+
+        <!-- scientific: trig & logs -->
+        <button class="key sci fn" data-insert="sin(" data-insert2="sin⁻¹(" data-label="sin" data-label2="sin⁻¹" data-key="s" aria-label="Sine" data-aria2="Inverse sine">sin</button>
+        <button class="key sci fn" data-insert="cos(" data-insert2="cos⁻¹(" data-label="cos" data-label2="cos⁻¹" data-key="c" aria-label="Cosine" data-aria2="Inverse cosine">cos</button>
+        <button class="key sci fn" data-insert="tan(" data-insert2="tan⁻¹(" data-label="tan" data-label2="tan⁻¹" data-key="t" aria-label="Tangent" data-aria2="Inverse tangent">tan</button>
+        <button class="key sci fn" data-insert="log(" data-insert2="10^(" data-label="log" data-label2="10ˣ" data-key="l" aria-label="Log base 10" data-aria2="Ten to the power">log</button>
+        <button class="key sci fn" data-insert="ln(" data-insert2="e^(" data-label="ln" data-label2="eˣ" data-key="n" aria-label="Natural log" data-aria2="e to the power">ln</button>
+
+        <!-- scientific: hyperbolic -->
+        <button class="key sci fn" data-insert="sinh(" data-insert2="sinh⁻¹(" data-label="sinh" data-label2="sinh⁻¹" aria-label="Hyperbolic sine" data-aria2="Inverse hyperbolic sine">sinh</button>
+        <button class="key sci fn" data-insert="cosh(" data-insert2="cosh⁻¹(" data-label="cosh" data-label2="cosh⁻¹" aria-label="Hyperbolic cosine" data-aria2="Inverse hyperbolic cosine">cosh</button>
+        <button class="key sci fn" data-insert="tanh(" data-insert2="tanh⁻¹(" data-label="tanh" data-label2="tanh⁻¹" aria-label="Hyperbolic tangent" data-aria2="Inverse hyperbolic tangent">tanh</button>
+        <button class="key sci fn" data-insert="log₂(" data-insert2="2^(" data-label="log₂" data-label2="2ˣ" aria-label="Log base 2" data-aria2="Two to the power">log₂</button>
+        <button class="key sci fn" data-insert="E" data-key="E" title="×10ⁿ" aria-label="Exponent, times ten to the power">EXP</button>
+
+        <!-- scientific: powers & roots -->
+        <button class="key sci fn" data-insert="²" data-insert2="³" data-label="x²" data-label2="x³" aria-label="Square" data-aria2="Cube">x²</button>
+        <button class="key sci fn" data-insert="^" data-key="^" aria-label="Power">xʸ</button>
+        <button class="key sci fn" data-insert="√(" data-insert2="∛(" data-label="√" data-label2="∛" data-key="r" aria-label="Square root" data-aria2="Cube root">√</button>
+        <button class="key sci fn" data-insert="ʸ√" title="x ʸ√ y = y-th root of x" aria-label="Y-th root">ʸ√x</button>
+        <button class="key sci fn" data-insert="⁻¹" aria-label="Reciprocal">1/x</button>
+
+        <!-- scientific: combinatorics -->
+        <button class="key sci fn" data-insert="!" data-key="!" aria-label="Factorial">n!</button>
+        <button class="key sci fn" data-insert="abs(" aria-label="Absolute value">|x|</button>
+        <button class="key sci fn" data-insert="P" title="n P r" aria-label="Permutations">nPr</button>
+        <button class="key sci fn" data-insert="C" title="n C r" aria-label="Combinations">nCr</button>
+        <button class="key sci fn" data-insert=" mod " data-key="m" aria-label="Modulo">mod</button>
+
+        <!-- standard -->
+        <button class="key op" data-insert="(" data-key="(" aria-label="Open parenthesis">(</button>
+        <button class="key op" data-insert=")" data-key=")" aria-label="Close parenthesis">)</button>
+        <button class="key op" data-insert="%" data-key="%" aria-label="Percent">%</button>
+        <button class="key op" data-action="back" data-key="Backspace" aria-label="Backspace">⌫</button>
+        <button class="key op" data-action="clear" data-key="Escape Delete" aria-label="Clear all">AC</button>
+
+        <button class="key num" data-insert="7" data-key="7">7</button>
+        <button class="key num" data-insert="8" data-key="8">8</button>
+        <button class="key num" data-insert="9" data-key="9">9</button>
+        <button class="key op" data-insert="×" data-key="* x" aria-label="Multiply">×</button>
+        <button class="key op" data-insert="÷" data-key="/" aria-label="Divide">÷</button>
+
+        <button class="key num" data-insert="4" data-key="4">4</button>
+        <button class="key num" data-insert="5" data-key="5">5</button>
+        <button class="key num" data-insert="6" data-key="6">6</button>
+        <button class="key op" data-insert="+" data-key="+" aria-label="Plus">+</button>
+        <button class="key op" data-insert="−" data-key="-" aria-label="Minus">−</button>
+
+        <button class="key num" data-insert="1" data-key="1">1</button>
+        <button class="key num" data-insert="2" data-key="2">2</button>
+        <button class="key num" data-insert="3" data-key="3">3</button>
+        <button class="key num" data-action="negate" aria-label="Positive negative" title="Change sign">±</button>
+        <button class="key eq" data-action="equals" data-key="Enter =" aria-label="Equals">=</button>
+
+        <button class="key num zero" data-insert="0" data-key="0">0</button>
+        <button class="key num" data-insert="." data-key=". ," aria-label="Decimal point">.</button>
+      </section>
+
+      <aside id="history" class="history" aria-label="History" inert>
+        <header class="history-header">
+          <h2>History</h2>
+          <div class="history-actions">
+            <button id="history-clear" class="subtle-btn">Clear</button>
+            <button id="history-close" class="subtle-btn icon-btn" aria-label="Close history" title="Close">✕</button>
+          </div>
+        </header>
+        <ol id="history-list" class="history-list"></ol>
+        <p id="history-empty" class="history-empty">There's no history yet</p>
+      </aside>
+    </main>
+
+    <dialog id="about" class="about" aria-labelledby="about-title">
+      <img src="assets/logo.svg" alt="" width="64" height="64" />
+      <h2 id="about-title">Numera Calculator</h2>
+      <p id="about-version" class="about-version">Version 1.0.0</p>
+      <p class="about-text">A precise standard and scientific calculator for Windows.</p>
+      <p id="about-copyright" class="about-meta">© 2026 Numera</p>
+      <form method="dialog"><button class="accent-btn" autofocus>OK</button></form>
+    </dialog>
+
+    <script src="engine.js"></script>
+    <script src="calculator.js"></script>
+  </body>
+</html>

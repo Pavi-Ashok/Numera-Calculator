@@ -1,0 +1,52 @@
+{
+  "name": "numera-calculator",
+  "productName": "Numera Calculator",
+  "version": "1.0.0",
+  "description": "A precise standard and scientific calculator for Windows",
+  "author": "Numera",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/engine.test.js",
+    "test:ui": "electron tests/ui.e2e.js",
+    "icon": "electron scripts/make-icon.js",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.numera.calculator",
+    "productName": "Numera Calculator",
+    "copyright": "© 2026 Numera",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Numera Calculator",
+      "uninstallDisplayName": "Numera Calculator",
+      "differentialPackage": false,
+      "artifactName": "Numera-Calculator-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Numera-Calculator-Portable-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3"
+  }
+}

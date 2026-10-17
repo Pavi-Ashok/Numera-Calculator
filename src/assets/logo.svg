@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="numera-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2B88D8"/>
+      <stop offset="1" stop-color="#0F548C"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#numera-bg)"/>
+  <rect x="13" y="12" width="38" height="13" rx="3" fill="#FFFFFF"/>
+  <rect x="38" y="16.5" width="9" height="4" rx="1" fill="#0F6CBD"/>
+  <g fill="#FFFFFF" fill-opacity="0.82">
+    <rect x="13" y="31" width="10" height="9" rx="2"/>
+    <rect x="27" y="31" width="10" height="9" rx="2"/>
+    <rect x="13" y="44" width="10" height="9" rx="2"/>
+    <rect x="27" y="44" width="10" height="9" rx="2"/>
+  </g>
+  <rect x="41" y="31" width="10" height="22" rx="2" fill="#FFFFFF"/>
+  <rect x="43.5" y="39" width="5" height="1.6" rx="0.8" fill="#0F6CBD"/>
+  <rect x="43.5" y="43" width="5" height="1.6" rx="0.8" fill="#0F6CBD"/>
+</svg>

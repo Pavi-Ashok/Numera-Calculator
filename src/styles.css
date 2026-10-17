@@ -1,0 +1,613 @@
+/* Numera Calculator — Fluent-style theme with light and dark modes. */
+
+:root {
+  color-scheme: light;
+  --bg: #f3f3f3;
+  --surface-raised: #ffffff;
+  --text: #1a1a1a;
+  --text-2: #5c5c5c;
+  --stroke: rgba(0, 0, 0, 0.08);
+  --stroke-strong: rgba(0, 0, 0, 0.16);
+
+  --key-num: #ffffff;
+  --key-num-hover: #f7f7f7;
+  --key-num-pressed: #efefef;
+  --key-fn: #f6f6f6;
+  --key-fn-hover: #eeeeee;
+  --key-fn-pressed: #e6e6e6;
+  --key-border: rgba(0, 0, 0, 0.06);
+  --key-border-bottom: rgba(0, 0, 0, 0.14);
+
+  --subtle-hover: rgba(0, 0, 0, 0.05);
+  --subtle-pressed: rgba(0, 0, 0, 0.09);
+
+  /* Numera brand blue */
+  --accent: #0f6cbd;
+  --accent-hover: #115ea3;
+  --accent-pressed: #0f548c;
+  --on-accent: #ffffff;
+  --accent-text: #0f6cbd;
+
+  --danger: #c42b1c;
+  --focus-outer: #000000;
+  --focus-inner: #ffffff;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  --radius: 4px;
+  --radius-lg: 8px;
+  --gap: 2px;
+  --font: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #202020;
+  --surface-raised: #2c2c2c;
+  --text: #ffffff;
+  --text-2: #c5c5c5;
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-strong: rgba(255, 255, 255, 0.16);
+
+  --key-num: #3b3b3b;
+  --key-num-hover: #434343;
+  --key-num-pressed: #343434;
+  --key-fn: #323232;
+  --key-fn-hover: #3a3a3a;
+  --key-fn-pressed: #2c2c2c;
+  --key-border: rgba(255, 255, 255, 0.07);
+  --key-border-bottom: rgba(0, 0, 0, 0.3);
+
+  --subtle-hover: rgba(255, 255, 255, 0.06);
+  --subtle-pressed: rgba(255, 255, 255, 0.1);
+
+  --accent: #479ef5;
+  --accent-hover: #62abf5;
+  --accent-pressed: #2886de;
+  --on-accent: #000000;
+  --accent-text: #62abf5;
+
+  --danger: #ff99a4;
+  --focus-outer: #ffffff;
+  --focus-inner: #000000;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  user-select: none;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Two-tone focus ring, visible on any background. */
+:focus-visible {
+  outline: 2px solid var(--focus-outer);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px var(--focus-inner) inset;
+}
+
+.calculator {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 6px 6px;
+}
+
+/* ---------- title bar ---------- */
+
+.titlebar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 2px 4px 8px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand-logo {
+  flex: none;
+}
+
+.brand-name {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+.mode-name {
+  color: var(--text-2);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.mode-name::before {
+  content: '·';
+  margin-right: 8px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.subtle-btn {
+  height: 32px;
+  min-width: 32px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.subtle-btn:hover {
+  background: var(--subtle-hover);
+}
+
+.subtle-btn:active {
+  background: var(--subtle-pressed);
+}
+
+.subtle-btn[aria-pressed='true'] {
+  color: var(--accent-text);
+  font-weight: 600;
+  background: var(--subtle-hover);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* ---------- settings flyout ---------- */
+
+.flyout {
+  position: absolute;
+  top: 38px;
+  right: 2px;
+  z-index: 30;
+  min-width: 220px;
+  padding: 4px;
+  background: var(--surface-raised);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.flyout[hidden] {
+  display: none;
+}
+
+.flyout-label {
+  padding: 8px 12px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.flyout-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.flyout-item:hover,
+.flyout-item:focus-visible {
+  background: var(--subtle-hover);
+}
+
+.check {
+  width: 16px;
+  text-align: center;
+  color: var(--accent-text);
+}
+
+.flyout-item[aria-checked='true'] .check::before {
+  content: '✓';
+  font-weight: 700;
+}
+
+.flyout-sep {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--stroke);
+}
+
+/* ---------- display ---------- */
+
+.display {
+  flex: 0 0 auto;
+  min-height: 118px;
+  padding: 4px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.indicators {
+  display: flex;
+  gap: 6px;
+  min-height: 20px;
+}
+
+.indicator {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  padding: 1px 6px;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--radius);
+}
+
+.indicator[hidden] {
+  display: none;
+}
+
+.expression {
+  margin-top: auto;
+  min-height: 22px;
+  text-align: right;
+  font-size: 15px;
+  color: var(--text-2);
+  word-break: break-all;
+}
+
+.result {
+  display: block;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-all;
+  user-select: text;
+}
+
+.result.preview {
+  color: var(--text-2);
+}
+
+.result.long   { font-size: 34px; }
+.result.longer { font-size: 26px; }
+
+.result.error {
+  color: var(--danger);
+  font-size: 30px;
+}
+
+/* ---------- keys ---------- */
+
+.memory-row {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--gap);
+  margin-bottom: 4px;
+}
+
+.keypad {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: var(--gap);
+  min-height: 0;
+}
+
+.key {
+  min-height: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--key-border);
+  border-bottom-color: var(--key-border-bottom);
+  background: var(--key-fn);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.08s ease;
+}
+
+.key:hover {
+  background: var(--key-fn-hover);
+}
+
+.key:active,
+.key.pressed {
+  background: var(--key-fn-pressed);
+  color: var(--text-2);
+}
+
+.key.num {
+  background: var(--key-num);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.key.num:hover {
+  background: var(--key-num-hover);
+}
+
+.key.num:active,
+.key.num.pressed {
+  background: var(--key-num-pressed);
+}
+
+.key.op {
+  font-size: 18px;
+}
+
+.key.mem {
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border-color: transparent;
+}
+
+.key.mem:hover {
+  background: var(--subtle-hover);
+}
+
+.key.mem:active,
+.key.mem.pressed {
+  background: var(--subtle-pressed);
+}
+
+.key.fn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+.key.eq {
+  grid-row: span 2;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: transparent;
+  font-size: 24px;
+}
+
+.key.eq:hover {
+  background: var(--accent-hover);
+}
+
+.key.eq:active,
+.key.eq.pressed {
+  background: var(--accent-pressed);
+  color: var(--on-accent);
+}
+
+.zero {
+  grid-column: span 3;
+}
+
+/* ---------- standard / scientific layout ---------- */
+
+.calculator:not(.scientific) .sci,
+.calculator:not(.scientific) .indicator-angle,
+.calculator:not(.scientific) #ind-second {
+  display: none;
+}
+
+.calculator:not(.scientific) .keypad {
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.calculator.scientific .sci {
+  animation: fade-in 0.18s ease-out backwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ---------- history drawer ---------- */
+
+.history {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(320px, 88%);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-raised);
+  border-left: 1px solid var(--stroke);
+  box-shadow: var(--shadow);
+  transform: translateX(105%);
+  transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+  z-index: 20;
+}
+
+.history.open {
+  transform: translateX(0);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px 10px 16px;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.history-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.history-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.history-list li {
+  padding: 8px 12px;
+  margin-bottom: 2px;
+  border-radius: var(--radius);
+  text-align: right;
+  cursor: pointer;
+}
+
+.history-list li:hover,
+.history-list li:focus-visible {
+  background: var(--subtle-hover);
+}
+
+.history-expr {
+  font-size: 13px;
+  color: var(--text-2);
+  word-break: break-all;
+}
+
+.history-result {
+  font-size: 20px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.history-empty {
+  margin: 24px 16px;
+  color: var(--text-2);
+}
+
+.history-empty[hidden] {
+  display: none;
+}
+
+/* ---------- about dialog ---------- */
+
+.about {
+  width: min(320px, calc(100% - 32px));
+  padding: 24px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.about::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.about h2 {
+  margin: 12px 0 2px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.about p {
+  margin: 4px 0;
+}
+
+.about-version,
+.about-meta {
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.about .about-text {
+  margin: 12px 0;
+}
+
+.accent-btn {
+  margin-top: 12px;
+  min-width: 96px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.accent-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* ---------- accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Windows High Contrast: let system colours take over, keep keys outlined. */
+@media (forced-colors: active) {
+  .key,
+  .subtle-btn,
+  .flyout,
+  .history,
+  .about {
+    border: 1px solid ButtonText;
+  }
+
+  .key.eq,
+  .key.fn[aria-pressed='true'],
+  .subtle-btn[aria-pressed='true'] {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}
